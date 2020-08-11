@@ -86,7 +86,10 @@ if($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])){
 						<input type="file" name="image" size="35" value="test" />
 							<?php if($error['image'] === 'type'): ?>
 								<p class="error">*「.gif」または「.jpg」または「.png」の画像を指定してください。</p>
-							<?php endif; ?>
+								<?php endif; ?>
+								<?php if(!empty($error)): ?>
+									<p class ="error">*恐れ入りますが、画像を改めて指定してください</p>
+								<?php endif; ?>
 						</dd>
 				</dl>
 				<div><input type="submit" value="入力内容を確認する" /></div>
