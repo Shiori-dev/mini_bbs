@@ -32,8 +32,28 @@ if(!empty($_POST)){   //$_POSTがあれは(投稿するボタンがクリック�
   }
 }
 
+//$pageに_REQUEST['page']を入れる
+$page = $_REQUEST['page'];
+//パラメータのpageに1より小さい数を入れられた時に1ページ目を表示する
+if($page == ''){
+  $page = 1;
+}
+$page = max($page,1);
+
+//最終ページの取得
+$counts = $db->query('SELECT COUNT(*) AS cnt FROM posts');//SQLでメッセージの件数を取得
+$cnt = $counts->fetch();
+$maxPage = ceil($cnt['cnt'] / 5); //最終のページ数を$maxPageへ入れる(DBから取得した件数を5で割った数字を少数になったときに切り上げる)
+$page = min($page, $maxPage); //$maxPageで取得された数字以上の数字を指定された際、最終ページに補正して表示
+
+// 5件ずつページネーションするため、$startに式を代入
+$start = ($page - 1) * 5; //URLパラメータで受け取った数字($page)に-1,そこに*5をする
+
 //一覧表示するため投稿したメッセージを取得(DBから投稿された日が新しい順で取得)
-$posts = $db->query('SELECT m.name, m.picture, p.* FROM members m,posts p WHERE m.id=p.member_id ORDER BY p.created DESC');
+//5件ずつ表示する(LIMIT ?,5)
+$posts = $db->prepare('SELECT m.name, m.picture, p.* FROM members m,posts p WHERE m.id=p.member_id ORDER BY p.created DESC LIMIT ?,5');
+$posts->bindParam(1, $start, PDO::PARAM_INT);
+$posts->execute();
 
 //メッセージ返信の処理
 if(isset($_REQUEST['res'])){
@@ -96,8 +116,8 @@ if(isset($_REQUEST['res'])){
 
       <!-- 返信ではないメッセージには「返信元~」を表記しないif文 -->
       <?php if($post['reply_message_id'] > 0): ?>
-    <!-- 「返信元のメッセージ」の選択でパラメータにreply_message_idを渡してview.phpへ遷移 -->
-    <a href="view.php?id=<?php print(htmlspecialchars($post['reply_message_id'], ENT_QUOTES)); ?>">返信元のメッセージ</a>
+      <!-- 「返信元のメッセージ」の選択でパラメータにreply_message_idを渡してview.phpへ遷移 -->
+      <a href="view.php?id=<?php print(htmlspecialchars($post['reply_message_id'], ENT_QUOTES)); ?>">返信元のメッセージ</a>
       <?php endif; ?>
 
       <!-- 削除のリンクがログイン中のidのメッセージにのみ表示されるif文 -->
@@ -111,11 +131,23 @@ if(isset($_REQUEST['res'])){
     <?php endforeach; ?>
     <!-- $postの繰り返し終わり -->
 
-
-<ul class="paging">
-<li><a href="index.php?page=">前のページへ</a></li>
-<li><a href="index.php?page=">次のページへ</a></li>
-</ul>
+    <!-- ページネーションの処理 -->
+    <ul class="paging">
+      <!-- ページが1より大きい時「前へ」リンクを貼る -->
+      <?php if($page > 1): ?>
+        <li><a href="index.php?page=<?php print($page-1); ?>">前のページへ</a></li>
+      <?php else: ?>
+      <!-- ページが1だったら「前へ」リンクを貼らない -->
+        <li>前のページへ</li>
+      <?php endif; ?>
+      <!-- $pageが最大のページ数に達していなければ「次へ」リンクを貼る -->
+      <?php if($page < $maxPage): ?>
+        <li><a href="index.php?page=<?php print($page+1); ?>">次のページへ</a></li>
+      <?php else: ?>
+      <!-- $pageが最大のページ数に達してたときは「次へ」リンクを貼らない -->
+        <li>次のページへ</li>
+      <?php endif; ?>
+    </ul>
   </div>
 </div>
 </body>
