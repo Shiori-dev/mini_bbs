@@ -31,6 +31,9 @@ if(!empty($_POST)){   //$_POSTがあれは(投稿するボタンがクリック�
   }
 }
 
+//一覧表示するため投稿したメッセージを取得(DBから投稿された日が新しい順で取得)
+$posts = $db->query('SELECT m.name, m.picture, p.* FROM members m,posts p WHERE m.id=p.member_id ORDER BY p.created DESC');
+
 ?>
 
 <!DOCTYPE html>
@@ -67,9 +70,13 @@ if(!empty($_POST)){   //$_POSTがあれは(投稿するボタンがクリック�
       </div>
     </form>
 
+    <!-- 投稿の一覧を表示 -->
+    <!-- 繰り返し配列の中身を精査して$postにわたす -->
+    <?php foreach($posts as $post): ?>
     <div class="msg">
     <img src="member_picture" width="48" height="48" alt="" />
-    <p><span class="name">（）</span>[<a href="index.php?res=">Re</a>]</p>
+    <!-- DBから1件取得した$POST['message']を表示する -->
+    <p><?php print(htmlspecialchars($post['message'], ENT_QUOTES)); ?><span class="name">（）</span>[<a href="index.php?res=">Re</a>]</p>
     <p class="day"><a href="view.php?id="></a>
 <a href="view.php?id=">
 返信元のメッセージ</a>
@@ -77,6 +84,9 @@ if(!empty($_POST)){   //$_POSTがあれは(投稿するボタンがクリック�
 style="color: #F33;">削除</a>]
     </p>
     </div>
+    <?php endforeach; ?>
+    <!-- $postの繰り返し終わり -->
+
 
 <ul class="paging">
 <li><a href="index.php?page=">前のページへ</a></li>
