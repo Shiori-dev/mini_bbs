@@ -96,13 +96,18 @@ if(isset($_REQUEST['res'])){
 
       <!-- 返信ではないメッセージには「返信元~」を表記しないif文 -->
       <?php if($post['reply_message_id'] > 0): ?>
-    <!-- 「返信元のメッセージ」の選択でview.phpへ遷移 -->
+    <!-- 「返信元のメッセージ」の選択でパラメータにreply_message_idを渡してview.phpへ遷移 -->
     <a href="view.php?id=<?php print(htmlspecialchars($post['reply_message_id'], ENT_QUOTES)); ?>">返信元のメッセージ</a>
       <?php endif; ?>
-    [<a href="delete.php?id="
-    style="color: #F33;">削除</a>]
-    </p>
-    </div>
+
+      <!-- 削除のリンクがログイン中のidのメッセージにのみ表示されるif文 -->
+      <?php if($_SESSION['id'] == $post['member_id']): ?>
+      <!-- 「削除」の選択でパラメータにidを渡してdelete.phpへ遷移 -->
+      [<a href="delete.php?id=<?php print(htmlspecialchars($post['id'])); ?>"
+      style="color: #F33;">削除</a>]
+        <?php endif; ?>
+      </p>
+      </div>
     <?php endforeach; ?>
     <!-- $postの繰り返し終わり -->
 
