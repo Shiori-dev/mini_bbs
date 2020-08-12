@@ -74,10 +74,12 @@ $posts = $db->query('SELECT m.name, m.picture, p.* FROM members m,posts p WHERE 
     <!-- 繰り返し配列の中身を精査して$postにわたす -->
     <?php foreach($posts as $post): ?>
     <div class="msg">
-    <img src="member_picture" width="48" height="48" alt="" />
-    <!-- DBから1件取得した$POST['message']を表示する -->
-    <p><?php print(htmlspecialchars($post['message'], ENT_QUOTES)); ?><span class="name">（）</span>[<a href="index.php?res=">Re</a>]</p>
-    <p class="day"><a href="view.php?id="></a>
+    <!-- アカウントが登録する画像を取得して表示 画像が保管されているディレクトリ名「member_picture/」を補完-->
+    <img src="member_picture/<?php print(htmlspecialchars($post['picture'], ENT_QUOTES)); ?>member_picture" width="48" height="48" alt="<?php print(htmlspecialchars($post['name'], ENT_QUOTES)); ?>" />
+    <!-- DBから1件取得した$POST['message']を表示する $post['name']で投稿者の名前を表示 -->
+    <p><?php print(htmlspecialchars($post['message'], ENT_QUOTES)); ?><span class="name">（<?php print(htmlspecialchars($post['name'], ENT_QUOTES)); ?>）</span>[<a href="index.php?res=">Re</a>]</p>
+    <!-- 投稿日時を取得して表示 -->
+    <p class="day"><a href="view.php?id="><?php print(htmlspecialchars($post['created'], ENT_QUOTES)); ?></a>
 <a href="view.php?id=">
 返信元のメッセージ</a>
 [<a href="delete.php?id="
