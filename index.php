@@ -19,10 +19,11 @@ if(isset($_SESSION['id']) && $_SESSION['time'] + 3600 > time()){    //セッシ�
 
 if(!empty($_POST)){   //$_POSTがあれは(投稿するボタンがクリックされた時)
   if($_POST['message'] !== ''){   //$_POST['message'] が空でなければ
-      $message = $db->prepare('INSERT INTO posts SET member_id=?, message=?, created=NOW()');   //変数messageに対してインサート処理を行う
+      $message = $db->prepare('INSERT INTO posts SET member_id=?, message=?, reply_message_id=?, created=NOW()');   //変数messageに対してインサート処理を行う
       $message->execute(array(
         $member['id'],   //ログイン時にデータベースから取得したidと同じ($_SESSION['id']より、より確実)
-        $_POST['message']
+        $_POST['message'],
+        $_POST['reply_post_id']  //返信対象のメッセージid
       ));
 
       //POSTの処理を行った後もう一度index.phpを呼び出す(ページを再読み込み時、メッセージを重複して登録するのを防ぐため)
@@ -34,6 +35,14 @@ if(!empty($_POST)){   //$_POSTがあれは(投稿するボタンがクリック�
 //一覧表示するため投稿したメッセージを取得(DBから投稿された日が新しい順で取得)
 $posts = $db->query('SELECT m.name, m.picture, p.* FROM members m,posts p WHERE m.id=p.member_id ORDER BY p.created DESC');
 
+//メッセージ返信の処理
+if(isset($_REQUEST['res'])){
+  $response = $db->prepare('SELECT m.name, m.picture, p.* FROM members m, posts p WHERE m.id=p.member_id AND p.id =?');  //membersとpostsからデータを取得
+  $response->execute(array($_REQUEST['res']));  //変数response(「p.id」)に対してURLパラメータの数字を指定
+
+  $table = $response->fetch();
+  $message = '@' . $table['name'] . ' ' . $table['message'];
+} //＠をつけて名前とメッセージを出力する
 ?>
 
 <!DOCTYPE html>
@@ -59,8 +68,10 @@ $posts = $db->query('SELECT m.name, m.picture, p.* FROM members m,posts p WHERE 
       <!-- アカウントの名前を表示 -->
         <dt><?php print(htmlspecialchars($member['name'],ENT_QUOTES)); ?>さん、メッセージをどうぞ</dt>
         <dd>
-          <textarea name="message" cols="50" rows="5"></textarea>
-          <input type="hidden" name="reply_post_id" value="" />
+          <!-- 返信したいメッセージを表示 -->
+          <textarea name="message" cols="50" rows="5"><?php print(htmlspecialchars($message, ENT_QUOTES)); ?></textarea>
+          <!-- 返信したいメッセージのidをフォームにわたす -->
+          <input type="hidden" name="reply_post_id" value="<?php print(htmlspecialchars($_REQUEST['res'], ENT_QUOTES)); ?>" />
         </dd>
       </dl>
       <div>
@@ -75,9 +86,11 @@ $posts = $db->query('SELECT m.name, m.picture, p.* FROM members m,posts p WHERE 
     <?php foreach($posts as $post): ?>
     <div class="msg">
     <!-- アカウントが登録する画像を取得して表示 画像が保管されているディレクトリ名「member_picture/」を補完-->
-    <img src="member_picture/<?php print(htmlspecialchars($post['picture'], ENT_QUOTES)); ?>member_picture" width="48" height="48" alt="<?php print(htmlspecialchars($post['name'], ENT_QUOTES)); ?>" />
+    <img src="member_picture/<?php print(htmlspecialchars($post['picture'], ENT_QUOTES)); ?>" width="48" height="48" alt="<?php print(htmlspecialchars($post['name'], ENT_QUOTES)); ?>" />
     <!-- DBから1件取得した$POST['message']を表示する $post['name']で投稿者の名前を表示 -->
-    <p><?php print(htmlspecialchars($post['message'], ENT_QUOTES)); ?><span class="name">（<?php print(htmlspecialchars($post['name'], ENT_QUOTES)); ?>）</span>[<a href="index.php?res=">Re</a>]</p>
+    <!-- 「RE」の押下時に返信したいユーザーのidをパラメータに付与する -->
+    <p><?php print(htmlspecialchars($post['message'], ENT_QUOTES)); ?><span class="name">（<?php print(htmlspecialchars($post['name'], ENT_QUOTES)); ?>）</span>[<a href="index.php?res=<?php print(htmlspecialchars($post['id'], ENT_QUOTES)); ?>">Re</a>]</p>
+
     <!-- 投稿日時を取得して表示 -->
     <p class="day"><a href="view.php?id="><?php print(htmlspecialchars($post['created'], ENT_QUOTES)); ?></a>
 <a href="view.php?id=">
