@@ -6,7 +6,7 @@ if(isset($_SESSION['id']) && $_SESSION['time'] + 3600 > time()){    //セッシ�
   //ログイン中の処理
   $_SESSION['time'] = time();   //最新の操作時に現在の時刻をセッションのtimeに上書き
 
-  //データベースからログインした会員情報を引き出す
+  //ログインに成功したら、データベースからログインした会員idを引き出す
   $members = $db->prepare('SELECT * FROM members WHERE id=?');
   $members->execute(array($_SESSION['id']));
   $member = $members->fetch();    //membersから変数memberにfetchで引き出したデータを保存
@@ -16,6 +16,21 @@ if(isset($_SESSION['id']) && $_SESSION['time'] + 3600 > time()){    //セッシ�
   header('Location: login.php');
   exit();
 }
+
+if(!empty($_POST)){   //$_POSTがあれは(投稿するボタンがクリックされた時)
+  if($_POST['message'] !== ''){   //$_POST['message'] が空でなければ
+      $message = $db->prepare('INSERT INTO posts SET member_id=?, message=?, created=NOW()');   //変数messageに対してインサート処理を行う
+      $message->execute(array(
+        $member['id'],   //ログイン時にデータベースから取得したidと同じ($_SESSION['id']より、より確実)
+        $_POST['message']
+      ));
+
+      //POSTの処理を行った後もう一度index.phpを呼び出す(ページを再読み込み時、メッセージを重複して登録するのを防ぐため)
+      header('Location: index.php');
+      exit();
+  }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -35,7 +50,7 @@ if(isset($_SESSION['id']) && $_SESSION['time'] + 3600 > time()){    //セッシ�
     <h1>ひとこと掲示板</h1>
   </div>
   <div id="content">
-  	<div style="text-align: right"><a href="logout.php">ログアウト</a></div>
+    <div style="text-align: right"><a href="logout.php">ログアウト</a></div>
     <form action="" method="post">
       <dl>
       <!-- アカウントの名前を表示 -->
