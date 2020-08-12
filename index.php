@@ -93,10 +93,14 @@ if(isset($_REQUEST['res'])){
 
     <!-- 投稿日時を取得して表示 -->
     <p class="day"><a href="view.php?id=<?php print(htmlspecialchars($post['id'])); ?>"><?php print(htmlspecialchars($post['created'], ENT_QUOTES)); ?></a>
-<a href="view.php?id=">
-返信元のメッセージ</a>
-[<a href="delete.php?id="
-style="color: #F33;">削除</a>]
+
+      <!-- 返信ではないメッセージには「返信元~」を表記しないif文 -->
+      <?php if($post['reply_message_id'] > 0): ?>
+    <!-- 「返信元のメッセージ」の選択でview.phpへ遷移 -->
+    <a href="view.php?id=<?php print(htmlspecialchars($post['reply_message_id'], ENT_QUOTES)); ?>">返信元のメッセージ</a>
+      <?php endif; ?>
+    [<a href="delete.php?id="
+    style="color: #F33;">削除</a>]
     </p>
     </div>
     <?php endforeach; ?>
