@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>ひとこと掲示板</title>
+
+	<link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+<div id="wrap">
+  <div id="head">
+    <h1>ひとこと掲示板</h1>
+  </div>
+  <div id="content">
+    <div style="text-align: right"><a href="php/logout.php">ログアウト</a></div>
+    <form action="" method="post">
+      <dl>
+      <!-- アカウントの名前を表示 -->
+        <dt><?php print(htmlspecialchars($member['name'],ENT_QUOTES)); ?>さん、メッセージをどうぞ</dt>
+        <dd>
+          <!-- 返信したいメッセージを表示 -->
+          <textarea name="message" cols="50" rows="5"><?php print(htmlspecialchars($message, ENT_QUOTES)); ?></textarea>
+          <!-- 返信したいメッセージのidをフォームにわたす -->
+          <input type="hidden" name="reply_post_id" value="<?php print(htmlspecialchars($_REQUEST['res'], ENT_QUOTES)); ?>" />
+        </dd>
+      </dl>
+      <div>
+        <p>
+          <input type="submit" value="投稿する" />
+        </p>
+      </div>
+    </form>
+
+    <!-- 投稿の一覧を表示 -->
+    <!-- 繰り返し配列の中身を精査して$postにわたす -->
+    <?php foreach($posts as $post): ?>
+    <div class="msg">
+    <!-- アカウントが登録する画像を取得して表示 画像が保管されているディレクトリ名「member_picture/」を補完-->
+    <img src="member_picture/<?php print(htmlspecialchars($post['picture'], ENT_QUOTES)); ?>" width="48" height="48" alt="<?php print(htmlspecialchars($post['name'], ENT_QUOTES)); ?>" />
+    <!-- DBから1件取得した$POST['message']を表示する $post['name']で投稿者の名前を表示 -->
+    <!-- 「RE」の押下時に返信したいユーザーのidをパラメータに付与する -->
+    <p><?php print(htmlspecialchars($post['message'], ENT_QUOTES)); ?><span class="name">（<?php print(htmlspecialchars($post['name'], ENT_QUOTES)); ?>）</span>[<a href="php/index.php?res=<?php print(htmlspecialchars($post['id'], ENT_QUOTES)); ?>">Re</a>]</p>
+
+    <!-- 投稿日時を取得して表示 -->
+    <p class="day"><a href="php/view.php?id=<?php print(htmlspecialchars($post['id'])); ?>"><?php print(htmlspecialchars($post['created'], ENT_QUOTES)); ?></a>
+
+      <!-- 返信ではないメッセージには「返信元~」を表記しないif文 -->
+      <?php if($post['reply_message_id'] > 0): ?>
+      <!-- 「返信元のメッセージ」の選択でパラメータにreply_message_idを渡してview.phpへ遷移 -->
+      <a href="php/view.php?id=<?php print(htmlspecialchars($post['reply_message_id'], ENT_QUOTES)); ?>">返信元のメッセージ</a>
+      <?php endif; ?>
+
+      <!-- 削除のリンクがログイン中のidのメッセージにのみ表示されるif文 -->
+      <?php if($_SESSION['id'] == $post['member_id']): ?>
+      <!-- 「削除」の選択でパラメータにidを渡してdelete.phpへ遷移 -->
+      [<a href="php/delete.php?id=<?php print(htmlspecialchars($post['id'])); ?>"
+      style="color: #F33;">削除</a>]
+        <?php endif; ?>
+      </p>
+      </div>
+    <?php endforeach; ?>
+    <!-- $postの繰り返し終わり -->
+
+    <!-- ページネーションの処理 -->
+    <ul class="paging">
+      <!-- ページが1より大きい時「前へ」リンクを貼る -->
+      <?php if($page > 1): ?>
+        <li><a href="php/index.php?page=<?php print($page-1); ?>">前のページへ</a></li>
+      <?php else: ?>
+      <!-- ページが1だったら「前へ」リンクを貼らない -->
+        <li>前のページへ</li>
+      <?php endif; ?>
+      <!-- $pageが最大のページ数に達していなければ「次へ」リンクを貼る -->
+      <?php if($page < $maxPage): ?>
+        <li><a href="php/index.php?page=<?php print($page+1); ?>">次のページへ</a></li>
+      <?php else: ?>
+      <!-- $pageが最大のページ数に達してたときは「次へ」リンクを貼らない -->
+        <li>次のページへ</li>
+      <?php endif; ?>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
