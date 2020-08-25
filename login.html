@@ -1,3 +1,4 @@
+<!-- ログイン画面 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -15,23 +16,17 @@
     <div id="lead">
       <p>メールアドレスとパスワードを記入してログインしてください。</p>
       <p>入会手続きがまだの方はこちらからどうぞ。</p>
-      <p>&raquo;<a href="join/">入会手続きをする</a></p>
+      <p>&raquo;<a href="join.html">入会手続きをする</a></p>
     </div>
     <form action="" method="post">
       <dl>
         <dt>メールアドレス</dt>
         <dd>
-          <input type="text" name="email" size="35" maxlength="255" value="<?php print(htmlspecialchars($email, ENT_QUOTES)); ?>" />
+          <input type="text" name="email" size="35" maxlength="255" value="" />
         </dd>
         <dt>パスワード</dt>
         <dd>
-          <input type="password" name="password" size="35" maxlength="255" value="<?php print(htmlspecialchars($_POST['password'], ENT_QUOTES)); ?>" />
-          <?php if($error['login'] === 'blank'): ?>
-            <p class="error">*メールアドレスとパスワードをご記入ください</p>
-          <?php endif; ?>
-          <?php if($error['login'] === 'failed'): ?>
-            <p class="error">*ログインに失敗しました。正しくご記入ください</p>
-          <?php endif; ?>
+          <input type="password" name="password" size="35" maxlength="255" value="" />
         </dd>
         <dt>ログイン情報の記録</dt>
         <dd>
@@ -45,8 +40,9 @@
     </form>
   </div>
   <div id="foot">
-    <p><img src="images/txt_copyright.png" width="136" height="15" alt="(C) H2O Space. MYCOM" /></p>
+    <p><img src="../images/txt_copyright.png" width="136" height="15" alt="(C) H2O Space. MYCOM" /></p>
   </div>
 </div>
+<script type="text/javascript" src="js/login.js"></script>
 </body>
 </html>
