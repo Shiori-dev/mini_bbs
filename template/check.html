@@ -1,0 +1,46 @@
+<!-- 登録内容確認ページ -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>会員登録</title>
+	<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+	<div id="wrap">
+	<div id="head">
+		<h1>会員登録</h1>
+	</div>
+
+	<div id="content">
+		<p>記入した内容を確認して、「登録する」ボタンをクリックしてください</p>
+		<form action="" method="post">
+			<input type="hidden" name="action" value="submit" />
+			<dl>
+				<dt>ニックネーム</dt>
+				<dd>
+					<!-- 登録画面で記入されたニックネームを表示 -->
+						</dd>
+				<dt>メールアドレス</dt>
+				<dd>
+					<!-- 登録画面で記入されたメールアドレスを表示 -->
+						</dd>
+				<dt>パスワード</dt>
+				<dd>
+					【表示されません】
+						</dd>
+				<dt>写真など</dt>
+				<dd>
+					<!--登録画面でアップされた画像を表示 -->
+					<img src="member_picture/">
+						</dd>
+			</dl>
+			<div><a href="join.php">&laquo;&nbsp;書き直す</a> ｜ <input type="submit" value="登録する"　/></div>
+		</form>
+		</div>
+
+	</div>
+</body>
+</html>
