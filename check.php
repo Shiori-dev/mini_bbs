@@ -10,9 +10,10 @@ session_start();
 require('dbconnect.php');
 include('template/check.html');
 
-//
+//セッションの内容を検査(入力画面を正しく通過せずにcheck.phpが呼び出された場合)
 if(!isset($_SESSION['join'])){
-	header('Location: main.php');
+	//強制的に会員登録画面へ遷移
+	header('Location: join.php');
 	exit();
 }
 

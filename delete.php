@@ -3,7 +3,6 @@
 session_start();
 //外部ファイル読み込み
 require('dbconnect.php');
-include('template/delete.html');
 
 //ログインしているユーザーのメッセージが選択されているか確認
 if(isset($_SESSION['id'])){

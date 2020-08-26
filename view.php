@@ -18,8 +18,6 @@ $posts = $db->prepare('SELECT m.name, m.picture, p.* FROM members m, posts p WHE
 //URLパラメータから取得されたidを使ってメッセージを1件表示
 $posts->execute(array($_REQUEST['id']));
 
-
-
 //メッセージが表示されたときの処理 画像、名前、時間を取得して表示
 if($post = $posts->fetch()){
   print(htmlspecialchars($post['picture']));

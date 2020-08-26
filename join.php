@@ -6,6 +6,7 @@ session_start();
 require('dbconnect.php');
 include 'template/join.html';
 
+//フォームが送信時、$_POSTが空ではない場合エラーチェックを実行
 if(!empty($_POST)){
 	//ニックネームの記入漏れチェック
 	if($_POST['name'] ===''){
@@ -49,7 +50,7 @@ if(!empty($_POST)){
 		$image = date('YmdHis') . $_FILES['image']['name'];
 		//保存する場所を指定してファイルをアップロード
 		move_uploaded_file($_FILES['image']['tmp_name'],'member_picture/' . $image);
-		//アップロードしたファイルをDBに保管するためセッションに保存
+		//セションに値を保存
 		$_SESSION['join'] = $_POST;
 		$_SESSION['join']['image'] = $image;
 		//記入内容に問題がないとき、check.phpへ遷移
@@ -58,7 +59,7 @@ if(!empty($_POST)){
 	}
 }
 
-
+//URLパラメータにrewriteがあれば、$_POSTに$_SESSIONの内容を代入
 if($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])){
 		$_POST = $_SESSION['join'];
 }

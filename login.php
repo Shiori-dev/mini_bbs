@@ -4,7 +4,7 @@
 session_start();
 //外部ファイルを読み込み
 require('dbconnect.php');
-include('template/login.html');
+include 'template/login.html';
 
 //cookieにメールアドレスが保存されていたら$emailに代入
 if($_COOKIE['email'] !==''){
