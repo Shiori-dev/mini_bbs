@@ -121,17 +121,16 @@ if($_SESSION['id'] == $post['member_id']){
   print(htmlspecialchars($post['id']));
 }
 
-
 //ページネーション
 //ページが1より大きい時「前へ」リンクを設置
 if($page > 1){
   print($page-1);
-  print "前のページへ"
+  print "前のページへ";
 }
 //$pageが最大のページ数に達していなければ「次へ」リンクを設置
 if($page < $maxPage){
 print($page+1);
-print "次のページへ"
+print "次のページへ";
 }else{
 
 }
