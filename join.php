@@ -4,6 +4,7 @@
 session_start();
 //外部ファイル読み込み
 require('dbconnect.php');
+require('app/functions.php');
 include 'template/join.html';
 
 //フォームが送信時、$_POSTが空ではない場合エラーチェックを実行
@@ -40,6 +41,7 @@ if(!empty($_POST)){
 		$member->execute(array($_POST['email']));
 		$record = $member->fetch();
 		if($record['cnt'] > 0){
+			//エラメッセージにduplicateを設定
 			$error['email'] = 'duplicate';
 		}
 	}
@@ -59,7 +61,7 @@ if(!empty($_POST)){
 	}
 }
 
-//URLパラメータにrewriteがあれば、$_POSTに$_SESSIONの内容を代入
+//URLパラメータにrewriteがあれば、$_POSTに$_SESSIONの内容を代入(check.phpから戻ってきた場合)
 if($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])){
 		$_POST = $_SESSION['join'];
 }
@@ -67,7 +69,7 @@ if($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])){
 //入力フォームのエラー文表示
 //ニックネームが記入されていない場合、エラー文を表示
 if($error['name'] === 'blank'){
-  echo '*ニックネームを入力してください';
+		echo '*ニックネームを入力してください';
 }
 
 //メールアドレス
