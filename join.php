@@ -7,7 +7,7 @@ require('dbconnect.php');
 require('app/functions.php');
 include 'template/join.html';
 
-//フォームが送信時、$_POSTが空ではない場合エラーチェックを実行
+//フォーム送信時、$_POSTが空ではない場合エラーチェックを実行
 if(!empty($_POST)){
 	//ニックネームの記入漏れチェック
 	if($_POST['name'] ===''){
@@ -67,38 +67,52 @@ if($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])){
 }
 
 //入力フォームのエラー文表示
-//ニックネームが記入されていない場合、エラー文を表示
+//ニックネームが記入されていない場合、エラー文表記のページに遷移
 if($error['name'] === 'blank'){
-		echo '*ニックネームを入力してください';
+	//ニックネームを入力してください
+	header('Location: join_e1.php');
+	exit();
 }
 
 //メールアドレス
-//記入漏れのエラー文を表示
+//記入漏れのエラー文表記のページに遷移
 if($error['email'] === 'blank'){
-	echo '*メールアドレスを入力してください';
+	//メールアドレスを入力してください
+	header('Location: template/join_e2.html');
+	exit();
 }
 
-//登録済みのアドレスだった場合のエラー文
+//登録済みのアドレスだった場合のエラー文表記のページに遷移
 if($error['email'] === 'duplicate'){
-	echo '指定されたメールアドレスは、すでに登録されています';
+	//指定されたメールアドレスは、すでに登録されています
 }
 
-//パスワードのエラー文
+//パスワードのエラー文表記のページに遷移
 if($error['password'] === 'length'){
-	echo '*パスワードは4文字以上で入力してください';
+	//*パスワードは4文字以上で入力してください
 }
 
-//パスワード記入漏れのエラー文を表示
+//パスワード記入漏れのエラー文表記のページに遷移
 if($error['password'] === 'blank'){
-	echo '*パスワードを入力してください';
+	//*パスワードを入力してください
 }
 
-//画像ファイルの拡張子チェック
+//画像ファイルの拡張子エラー文表記のページに遷移
 if($error['image'] ==='type'){
-	echo '*「.gif」または「.jpg」または「.png」の画像を指定してください';
+	//*「.gif」または「.jpg」または「.png」の画像を指定してください
 }
 
-//必須項目の再登録が必要な場合、画像の再登録を依頼
-if(!empty($error)){
-echo '*恐れ入りますが、画像を改めて指定してください';
+
+//ニックネームとメールアドレスが記入されていない場合、エラー文表記のページに遷移
+if($error['name'] === 'blank' && $error['email'] === 'blank'){
+	//ニックネーム・メールアドレスを入力してください
+	header('Location: template/join_e1.html');
+	exit();
+}
+
+//ニックネームとパスワードが記入されていない場合、エラー文表記のページに遷移
+if($error['name'] === 'blank' && $error['password'] === 'blank'){
+	//ニックネーム・パスワードを入力してください
+	header('Location: template/join_e1.html');
+	exit();
 }
