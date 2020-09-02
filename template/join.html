@@ -7,7 +7,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>会員登録</title>
 
-	<link rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
 	<div id="wrap">
@@ -17,30 +17,34 @@
 <!-- フォーム開始 -->
 		<div id="content">
 			<p>次のフォームに必要事項をご記入ください。</p>
-			<form action="join.php" method="post" enctype="multipart/form-data">
+			<form action="join.php"  id="form" method="post" enctype="multipart/form-data">
 				<dl>
 					<dt>ニックネーム<span class="required">必須</span><dt>
 						<dd>
-							<input type="text" name="name" size="35" maxlength="255" value="">
+							<input id="name" type="text" name="name" size="35" maxlength="255" required/>
+							<br>
+							<small id="message" ></small>
 						</dd>
 					<dt>メールアドレス<span class="required">必須</span></dt>
 						<dd>
-						<input type="text" name="email" size="35" maxlength="255" value="" >
-
+						<input id="email" type="email" name="email" size="35" maxlength="255" >
+						<small id="message"></small>
 						</dd>
 					<dt>パスワード<span class="required">必須</span></dt>
 						<dd>
-						<input type="password" name="password" size="10" maxlength="20" value="" >
-
+						<input id="password" type="password" name="password" size="10" maxlength="20" >
+						<small id="message"></small>
 						</dd>
 					<dt>写真など</dt>
 						<dd>
-						<input type="file" name="image" size="35" value="test" />
+						<input id="image" type="file" name="image" size="35" />
+						<small id="message"></small>
 						</dd>
 				</dl>
-				<div><input type="submit" value="入力内容を確認する" /></div>
+				<div><input id="button" type="submit" value="入力内容を確認する" /></div>
 			</form>
 		</div>
 <!-- フォーム終了 -->
+<script src="../js/join.js"></script>
 </body>
 </html>
