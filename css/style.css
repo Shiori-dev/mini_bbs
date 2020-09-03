@@ -117,7 +117,12 @@ li {
 	list-style: none;
 }
 
-.error {
+/* .error {
+	font-size: 90%;
+	color: #BB1850;
+} */
+
+#message {
 	font-size: 90%;
 	color: #BB1850;
 }
