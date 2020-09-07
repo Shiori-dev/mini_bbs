@@ -1,4 +1,3 @@
-<!-- 会員登録画面 -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -17,23 +16,24 @@
 <!-- フォーム開始 -->
 		<div id="content">
 			<p>次のフォームに必要事項をご記入ください。</p>
+			<!-- novalidateでhtml5のバリデーションチェックを非表示 -->
 			<form action="join.php"  id="form" method="post" enctype="multipart/form-data" novalidate>
 				<dl>
 					<dt>ニックネーム<span class="required">必須</span><dt>
 						<dd>
-							<input id="name" type="text" name="name" size="35" maxlength="255" required/>
+							<input id="name" type="text" name="name" size="35" maxlength="255"  value="" />
 							<br>
 							<small id="message" class="error"></small>
 						</dd>
 					<dt>メールアドレス<span class="required">必須</span></dt>
 						<dd>
-						<input id="email" type="email" name="email" size="35" maxlength="255" >
+						<input id="email" type="email" name="email" size="35" maxlength="255" value="" />
 						<br>
 						<small id="message" class="error"></small>
 						</dd>
 					<dt>パスワード<span class="required">必須</span></dt>
 						<dd>
-						<input id="password" type="password" name="password" size="10" maxlength="20" >
+						<input id="password" type="password" name="password" size="10" maxlength="20" value="" />
 						<br>
 						<small id="message" class="error"></small>
 						</dd>
