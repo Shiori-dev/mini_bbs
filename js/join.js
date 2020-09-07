@@ -1,7 +1,6 @@
 //厳密なエラーチェック
 'use strict';
 {
-
 // //formにイベントを設定(input:リアルタイムで入力を検知)
 //   document.querySelector('form').addEventListener('input', e => {
 //     //e.targetが'input'だったとき、以下を実行
@@ -28,28 +27,15 @@
   const name = form.name.value;
 
   // nameの入力数をコンソールでカウント
-  console.log( name.length );
+  // console.log( name.length );
 
   //文字数によってメッセージを分岐
-  if(name.length > 2 && name.length < 13){
+  if(name.length > 2 || name.length < 13){
     smallNode[0].textContent = '';
   }else{
     smallNode[0].textContent = 'ニックネームは3~12文字で記入してください';
   }
   });
-
-  //emailのチェック
-  //formの入力完了時にイベントを設定
-  // formNode[1].addEventListener('submit', e =>{
-  // //デフォルトのイベントキャンセル
-  // e.preventDefault();
-
-  //   //記入されたメールアドレスを定数emailに代入
-  //   const email = form.email.value;
-
-  //   //登録の重複をチェック
-
-  //   });
 
 //passwordのチェック
   //formの入力時にイベントを設定
@@ -60,14 +46,16 @@
   const password = form.password.value;
 
     // passwordの入力数をコンソールでカウント
-    console.log( password.length );
+    // console.log( password.length );
     //文字数によってメッセージを分岐
     if(password.length < 4 ){
       smallNode[2].textContent = 'パスワードは4文字以上で記入してください';
-      return;
+    }else{
+      smallNode[2].textContent = '';
     }
   });
 
+  //imageの拡張子チェック
   formNode[3].addEventListener('change' , e =>{
    //デフォルトのイベントキャンセル
     e.preventDefault();
@@ -116,6 +104,36 @@
     formNode.addEventListener("submit", emailVld);
     formNode.addEventListener("submit", passwordVld);
 
+/////////////////////////////////////////////////
+function sendData( data ) {
+    console.log( 'Sending data' );
+    // XMLHttpRequestインスタンスの新規作成
+    var xhr = new XMLHttpRequest();
+    //POSTでjoin.phpと非同期通信を実施
+    xhr.open("POST", 'join.php', true);
+    //リクエストに従って正しいヘッダー情報を送信
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
+    //送る値をrequestsに代入
+    const requests = {name:"form.name.value;", email:"form.email.value;", password:"form.password.value;", image:"form.image.value;"};
 
+    //通信完了をチェックし、中の処理を実行
+    xhr.onload = function(){
+    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+      // リクエストの終了。ここの処理を実行します
+      for (let i =0; i < requests.length; i++){
+        console.log(JSON.parse`${requests[i]}`);
+      }
+
+    };
+  };
+  //値を送信
+  xhr.send(requests);
+}
+
+  //buttonがクリックされたとき、設定した処理を実行
+  document.getElementById('button').onclick = function(){
+    sendData(requests);
+  };
+    /////////////////////////////////////////////////////
 }
