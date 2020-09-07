@@ -133,7 +133,7 @@ function sendData( data ) {
 
   //buttonがクリックされたとき、設定した処理を実行
   document.getElementById('button').onclick = function(){
-    sendData(requests);
+    sendData();
   };
     /////////////////////////////////////////////////////
 }
