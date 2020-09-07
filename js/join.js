@@ -27,7 +27,7 @@
   const name = form.name.value;
 
   // nameの入力数をコンソールでカウント
-  // console.log( name.length );
+  console.log( name.length );
 
   //文字数によってメッセージを分岐
   if(name.length > 2 || name.length < 13){
@@ -46,7 +46,7 @@
   const password = form.password.value;
 
     // passwordの入力数をコンソールでカウント
-    // console.log( password.length );
+    console.log( password.length );
     //文字数によってメッセージを分岐
     if(password.length < 4 ){
       smallNode[2].textContent = 'パスワードは4文字以上で記入してください';
@@ -74,17 +74,17 @@
     //記入されたニックネームを定数nameに代入
     const name = form.name.value;
     if(name === ""){
-      event.preventDefault();
+      e.preventDefault();
       smallNode[0].textContent='ニックネームを入力してください';
       return;
     }
   }
   //emailの入力有無チェックを設定
   const emailVld = function(){
-    //記入されたメールアドレスを定数emailに代入
+    // 記入されたメールアドレスを定数emailに代入
     const email = form.email.value;
     if(email === ""){
-      event.preventDefault();
+      e.preventDefault();
       smallNode[1].textContent='メールアドレスを入力してください';
       return;
     }
@@ -94,46 +94,80 @@
     //記入されたパスワードを定数passwordに代入
     const password = form.password.value;
     if(password === ""){
-      event.preventDefault();
+      e.preventDefault();
       smallNode[2].textContent='パスワードを入力してください';
       return;
     }
   }
+
   //ボタンが押されたとき、各入力有無のチェックを実行
-    formNode.addEventListener("submit", nameVld);
-    formNode.addEventListener("submit", emailVld);
-    formNode.addEventListener("submit", passwordVld);
+  formNode.addEventListener("submit", nameVld);
+  formNode.addEventListener("submit", emailVld);
+  formNode.addEventListener("submit", passwordVld);
 
 /////////////////////////////////////////////////
-function sendData( data ) {
-    console.log( 'Sending data' );
-    // XMLHttpRequestインスタンスの新規作成
-    var xhr = new XMLHttpRequest();
-    //POSTでjoin.phpと非同期通信を実施
-    xhr.open("POST", 'join.php', true);
-    //リクエストに従って正しいヘッダー情報を送信
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+// function sendData( data ) {
+//     console.log( 'Sending data' );
+//     // XMLHttpRequestインスタンスの新規作成
+//     var xhr = new XMLHttpRequest();
+//     //POSTでjoin.phpと非同期通信を実施
+//     xhr.open("POST", 'join.php', true);
+//     //リクエストに従って正しいヘッダー情報を送信
+//     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-    //送る値をrequestsに代入
-    const requests = {name:"form.name.value;", email:"form.email.value;", password:"form.password.value;", image:"form.image.value;"};
+//     //送る値をrequestsに代入
+//     const requests = {name:"form.name.value;", email:"form.email.value;", password:"form.password.value;", image:"form.image.value;"};
 
-    //通信完了をチェックし、中の処理を実行
-    xhr.onload = function(){
-    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-      // リクエストの終了。ここの処理を実行します
-      for (let i =0; i < requests.length; i++){
-        console.log(JSON.parse`${requests[i]}`);
+//     //通信完了をチェックし、中の処理を実行
+//     xhr.onload = function(){
+//     if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+//       // リクエストの終了。ここの処理を実行します
+//       for (let i =0; i < requests.length; i++){
+//         console.log(JSON.parse`${requests[i]}`);
+//       }
+
+//     };
+//   };
+//   //値を送信
+//   xhr.send(requests);
+// }
+
+//   //buttonがクリックされたとき、設定した処理を実行
+//   document.getElementById('button').onclick = function(){
+//     sendData();
+//   };
+    /////////////////////////////////////////////////////
+
+  //htmlがすべて呼び出されたあと下記を実行
+  window.onload = function() {
+    // ボタンが押されたらpostに設定した通信を実行
+    document.getElementById('button').addEventListener('click',e =>
+    {
+      //既存のイベントをキャンセル
+      e.preventDefault();
+      xhr.open('POST', 'join.php', true);
+      xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+      // フォームに入力した値をリクエストとして設定
+      const requests = {name:"form.name.value;", email:"form.email.value;", password:"form.password.value;", image:"form.image.value;"};
+      //requestの内容を送信
+      xhr.send(requests);
+    });
+
+  //XMLHttpRequestインスタンスの新規作成
+  const xhr = new XMLHttpRequest();
+
+  //POSTでjoin.phpと非同期通信を実施
+  xhr.onload=  function(){
+    //通信完了したら以下を実行
+    if(xhr.readyState === 4){
+      //正常に通信ができたらをレスポンスのテキストを受信
+      if(xhr.status === 200){
+          //コンソール
+          console.log ('通信成功');
+        }
       }
-
     };
   };
-  //値を送信
-  xhr.send(requests);
-}
 
-  //buttonがクリックされたとき、設定した処理を実行
-  document.getElementById('button').onclick = function(){
-    sendData();
-  };
-    /////////////////////////////////////////////////////
+
 }
