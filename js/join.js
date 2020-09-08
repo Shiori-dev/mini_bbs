@@ -1,17 +1,6 @@
 //厳密なエラーチェック
 'use strict';
 {
-// //formにイベントを設定(input:リアルタイムで入力を検知)
-//   document.querySelector('form').addEventListener('input', e => {
-//     //e.targetが'input'だったとき、以下を実行
-//     if (e.target.nodeName === 'INPUT') {
-//          //フォームのタイプを取得して変数typeに代入
-//     let type = e.target.type;
-//     //コンソールに「onInput」とタイプを表記
-//     console.log('onInput', type);
-//   }
-// });
-
   //form要素を定数に設定
   const formNode = document.querySelector('form');
   //small要素を定数に設定
@@ -131,11 +120,19 @@
       if(xhr.status === 200){
           //コンソール
           console.log ('通信成功');
+          //messageの処理
+          const message = document.getElementById('message');
+          ;
+
+          console.log (message);
+          //JSONの形式で値が返ってきたら各IDに挿入
+          message[0].value =JSON.parse(xhr.responseText)['name'];
+          message[1].value =JSON.parse(xhr.responseText)['email'];
+          message[2].value =JSON.parse(xhr.responseText)['password'];
+          message[3].value =JSON.parse(xhr.responseText)['image'];
+          }
         }
       }
     };
-  };
   //////////////////////////////////////////////////////////
-
-
-}
+};
