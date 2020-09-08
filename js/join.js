@@ -27,10 +27,10 @@
   const name = form.name.value;
 
   // nameの入力数をコンソールでカウント
-  console.log( name.length );
+  // console.log( name.length );
 
   //文字数によってメッセージを分岐
-  if(name.length > 2 || name.length < 13){
+  if(name.length > 2 && name.length < 13){
     smallNode[0].textContent = '';
   }else{
     smallNode[0].textContent = 'ニックネームは3~12文字で記入してください';
@@ -46,7 +46,7 @@
   const password = form.password.value;
 
     // passwordの入力数をコンソールでカウント
-    console.log( password.length );
+    // console.log( password.length );
     //文字数によってメッセージを分岐
     if(password.length < 4 ){
       smallNode[2].textContent = 'パスワードは4文字以上で記入してください';
@@ -67,6 +67,7 @@
     //「ファイル選択」下にエラーメッセージを表示
     smallNode[3].textContent ='「.jpg」「.jpeg」「.png」または「.gif」の画像を指定してください';
   }
+  formNode[3].classList.remove('disabled');
   });
 
   //formVldとして、formの必須項目の入力チェック処理を設定
@@ -99,39 +100,7 @@
   });
 
 
-/////////////////////////////////////////////////
-// function sendData( data ) {
-//     console.log( 'Sending data' );
-//     // XMLHttpRequestインスタンスの新規作成
-//     var xhr = new XMLHttpRequest();
-//     //POSTでjoin.phpと非同期通信を実施
-//     xhr.open("POST", 'join.php', true);
-//     //リクエストに従って正しいヘッダー情報を送信
-//     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-//     //送る値をrequestsに代入
-//     const requests = {name:"form.name.value;", email:"form.email.value;", password:"form.password.value;", image:"form.image.value;"};
-
-//     //通信完了をチェックし、中の処理を実行
-//     xhr.onload = function(){
-//     if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-//       // リクエストの終了。ここの処理を実行します
-//       for (let i =0; i < requests.length; i++){
-//         console.log(JSON.parse`${requests[i]}`);
-//       }
-
-//     };
-//   };
-//   //値を送信
-//   xhr.send(requests);
-// }
-
-//   //buttonがクリックされたとき、設定した処理を実行
-//   document.getElementById('button').onclick = function(){
-//     sendData();
-//   };
-    /////////////////////////////////////////////////////
-
+///////////////////非同期通信//////////////////////////////
   //htmlがすべて呼び出されたあと下記を実行
   window.onload = function() {
     // ボタンが押されたらpostに設定した通信を実行
@@ -139,12 +108,16 @@
     {
       //既存のイベントをキャンセル
       e.preventDefault();
+      //join.phpにPOST通信を実施
       xhr.open('POST', 'join.php', true);
-      xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+      //ヘッダーの設定(JSON形式)
+      xhr.setRequestHeader('Content-Type', 'application/json');
       // フォームに入力した値をリクエストとして設定
-      const requests = {name:"form.name.value;", email:"form.email.value;", password:"form.password.value;", image:"form.image.value;"};
+      const requests = {name:formNode[0].value, email:formNode[1].value, password:formNode[2].value, image:formNode[3].value};
+      //JSONにエンコード
+      const json_text = JSON.stringify(requests);
       //requestの内容を送信
-      xhr.send(requests);
+      xhr.send(json_text);
     });
 
   //XMLHttpRequestインスタンスの新規作成
@@ -162,6 +135,7 @@
       }
     };
   };
+  //////////////////////////////////////////////////////////
 
 
 }
