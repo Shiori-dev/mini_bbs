@@ -69,41 +69,35 @@
   }
   });
 
-  //nameの入力有無チェックを設定
-  const nameVld = function(){
-    //記入されたニックネームを定数nameに代入
+  //formVldとして、formの必須項目の入力チェック処理を設定
+  const formVld = function (){
+    //formの各項目の値を定数に代入
     const name = form.name.value;
-    if(name === ""){
-      e.preventDefault();
-      smallNode[0].textContent='ニックネームを入力してください';
-      return;
-    }
-  }
-  //emailの入力有無チェックを設定
-  const emailVld = function(){
-    // 記入されたメールアドレスを定数emailに代入
     const email = form.email.value;
-    if(email === ""){
-      e.preventDefault();
-      smallNode[1].textContent='メールアドレスを入力してください';
-      return;
-    }
-  }
-  //passwordの入力有無チェックを設定
-  const passwordVld = function(){
-    //記入されたパスワードを定数passwordに代入
     const password = form.password.value;
+
+    if(name === ""){
+          smallNode[0].textContent='ニックネームを入力してください';
+        }
+
+    if(email === ""){
+          smallNode[1].textContent='メールアドレスを入力してください';
+        }
+
     if(password === ""){
-      e.preventDefault();
-      smallNode[2].textContent='パスワードを入力してください';
-      return;
-    }
+          smallNode[2].textContent='パスワードを入力してください';
+        }
   }
 
-  //ボタンが押されたとき、各入力有無のチェックを実行
-  formNode.addEventListener("submit", nameVld);
-  formNode.addEventListener("submit", emailVld);
-  formNode.addEventListener("submit", passwordVld);
+  //ボタンクリック時に必須項目の入力をチェック
+  document.getElementById('button').addEventListener('click',e =>
+    {
+    //デフォルトのイベントキャンセル
+    e.preventDefault();
+    //formVldで設定した処理を実行
+    formVld();
+  });
+
 
 /////////////////////////////////////////////////
 // function sendData( data ) {
