@@ -6,87 +6,87 @@
   //small要素を定数に設定
   const smallNode = document.querySelectorAll('small');
 
-  //nameのチェック
-  //formの入力時にイベントを設定
-  formNode[0].addEventListener('input', e =>{
-  //デフォルトのイベントキャンセル
-  e.preventDefault();
+//   //nameのチェック
+//   //formの入力時にイベントを設定
+//   formNode[0].addEventListener('input', e =>{
+//   //デフォルトのイベントキャンセル
+//   e.preventDefault();
 
-  //記入されたニックネームを定数nameに代入
-  const name = form.name.value;
+//   //記入されたニックネームを定数nameに代入
+//   const name = form.name.value;
 
-  // nameの入力数をコンソールでカウント
-  // console.log( name.length );
+//   // nameの入力数をコンソールでカウント
+//   // console.log( name.length );
 
-  //文字数によってメッセージを分岐
-  if(name.length > 2 && name.length < 13){
-    smallNode[0].textContent = '';
-  }else{
-    smallNode[0].textContent = 'ニックネームは3~12文字で記入してください';
-  }
-  });
+//   //文字数によってメッセージを分岐
+//   if(name.length > 2 && name.length < 13){
+//     smallNode[0].textContent = '';
+//   }else{
+//     smallNode[0].textContent = 'ニックネームは3~12文字で記入してください';
+//   }
+//   });
 
-//passwordのチェック
-  //formの入力時にイベントを設定
-  formNode[2].addEventListener('input', e =>{
-    //デフォルトのイベントキャンセル
-    e.preventDefault();
-  //記入されたパスワードを定数passwordに代入
-  const password = form.password.value;
+// //passwordのチェック
+//   //formの入力時にイベントを設定
+//   formNode[2].addEventListener('input', e =>{
+//     //デフォルトのイベントキャンセル
+//     e.preventDefault();
+//   //記入されたパスワードを定数passwordに代入
+//   const password = form.password.value;
 
-    // passwordの入力数をコンソールでカウント
-    // console.log( password.length );
-    //文字数によってメッセージを分岐
-    if(password.length < 4 ){
-      smallNode[2].textContent = 'パスワードは4文字以上で記入してください';
-    }else{
-      smallNode[2].textContent = '';
-    }
-  });
+//     // passwordの入力数をコンソールでカウント
+//     // console.log( password.length );
+//     //文字数によってメッセージを分岐
+//     if(password.length < 4 ){
+//       smallNode[2].textContent = 'パスワードは4文字以上で記入してください';
+//     }else{
+//       smallNode[2].textContent = '';
+//     }
+//   });
 
-  //imageの拡張子チェック
-  formNode[3].addEventListener('change' , e =>{
-   //デフォルトのイベントキャンセル
-    e.preventDefault();
+//   //imageの拡張子チェック
+//   formNode[3].addEventListener('change' , e =>{
+//    //デフォルトのイベントキャンセル
+//     e.preventDefault();
 
-  // 画像ファイルを定数fileNameに代入
-  const image = document.getElementById('image').value;
-  //アップロードを許可する拡張子を設定、imageの拡張子を取得して一致しない場合の処理
-  if (!image.toUpperCase().match(/\.(jpg|jpeg|png|gif)$/i)){
-    //「ファイル選択」下にエラーメッセージを表示
-    smallNode[3].textContent ='「.jpg」「.jpeg」「.png」または「.gif」の画像を指定してください';
-  }
-  formNode[3].classList.remove('disabled');
-  });
+//   // 画像ファイルを定数fileNameに代入
+//   const image = document.getElementById('image').value;
+//   //アップロードを許可する拡張子を設定、imageの拡張子を取得して一致しない場合の処理
+//   if (!image.toUpperCase().match(/\.(jpg|jpeg|png|gif)$/i)){
+//     //「ファイル選択」下にエラーメッセージを表示
+//     smallNode[3].textContent ='「.jpg」「.jpeg」「.png」または「.gif」の画像を指定してください';
+//   }
+//   formNode[3].classList.remove('disabled');
+//   });
 
-  //formVldとして、formの必須項目の入力チェック処理を設定
-  const formVld = function (){
-    //formの各項目の値を定数に代入
-    const name = form.name.value;
-    const email = form.email.value;
-    const password = form.password.value;
+//   //formVldとして、formの必須項目の入力チェック処理を設定
+//   const formVld = function (){
+//     //formの各項目の値を定数に代入
+//     const name = form.name.value;
+//     const email = form.email.value;
+//     const password = form.password.value;
 
-    if(name === ""){
-          smallNode[0].textContent='ニックネームを入力してください';
-        }
+//     if(name === ""){
+//           smallNode[0].textContent='ニックネームを入力してください';
+//         }
 
-    if(email === ""){
-          smallNode[1].textContent='メールアドレスを入力してください';
-        }
+//     if(email === ""){
+//           smallNode[1].textContent='メールアドレスを入力してください';
+//         }
 
-    if(password === ""){
-          smallNode[2].textContent='パスワードを入力してください';
-        }
-  }
+//     if(password === ""){
+//           smallNode[2].textContent='パスワードを入力してください';
+//         }
+//   }
 
-  //ボタンクリック時に必須項目の入力をチェック
-  document.getElementById('button').addEventListener('click',e =>
-    {
-    //デフォルトのイベントキャンセル
-    e.preventDefault();
-    //formVldで設定した処理を実行
-    formVld();
-  });
+//   //ボタンクリック時に必須項目の入力をチェック
+//   document.getElementById('button').addEventListener('click',e =>
+//     {
+//     //デフォルトのイベントキャンセル
+//     e.preventDefault();
+//     //formVldで設定した処理を実行
+//     formVld();
+//   });
 
 
 ///////////////////非同期通信//////////////////////////////
@@ -100,11 +100,9 @@
       //join.phpにPOST通信を実施
       xhr.open('POST', 'join.php', true);
       //ヘッダーの設定
-      // xhr.setRequestHeader("Content-Type", "application/json")
       xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
       //formの値をrequestsに代入
       const requests = {name:formNode[0].value, email:formNode[1].value, password:formNode[2].value, image:formNode[3].value};
-      // const requests = {name:"test1", email:"test01@mail", password:"test3", image:"test4.jpg"};
       //JSONにエンコード
       const json_text = JSON.stringify(requests);
       console.log(json_text);
@@ -124,14 +122,13 @@
           //コンソール
           console.log ('通信成功');
           //messageの処理
-          // message = document.getElementById('message');
-          message = document.querySelectorAll('small');
+          message = document.getElementById('message');
           console.log (JSON.parse(xhr.responseText));
           // //JSONの形式で値が返ってきたら各IDに挿入
-          message[0].textContent =JSON.parse(xhr.responseText['name']);
-          message[1].textContent =JSON.parse(xhr.responseText['email']);
-          message[2].textContent =JSON.parse(xhr.responseText['password']);
-          message[3].textContent=JSON.parse(xhr.responseText['image']);
+          // message[0].textContent =JSON.parse(xhr.responseText['name']);
+          // message[1].textContent =JSON.parse(xhr.responseText['email']);
+          message[2].value =JSON.parse(xhr.responseText['password']);
+          // message[3].textContent=JSON.parse(xhr.responseText['image']);
           }
         }
       }
