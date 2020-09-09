@@ -10,8 +10,6 @@ require('dbconnect.php');
 require('app/functions.php');
 //join.php読み込み
 include 'template/join.html';
-//join.php読み込み
-// require_once('validation.php');
 
 //フォーム送信時、$POSTで受け取った値が空ではない場合実行するエラーチェックを設定
 if(!empty($_POST[""])){
