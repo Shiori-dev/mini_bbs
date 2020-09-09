@@ -99,12 +99,15 @@
       e.preventDefault();
       //join.phpにPOST通信を実施
       xhr.open('POST', 'join.php', true);
-      //ヘッダーの設定(JSON形式)
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      // フォームに入力した値をリクエストとして設定
+      //ヘッダーの設定
+      // xhr.setRequestHeader("Content-Type", "application/json")
+      xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+      //formの値をrequestsに代入
       const requests = {name:formNode[0].value, email:formNode[1].value, password:formNode[2].value, image:formNode[3].value};
+      // const requests = {name:"test1", email:"test01@mail", password:"test3", image:"test4.jpg"};
       //JSONにエンコード
       const json_text = JSON.stringify(requests);
+      console.log(json_text);
       //requestの内容を送信
       xhr.send(json_text);
     });
@@ -113,7 +116,7 @@
   const xhr = new XMLHttpRequest();
 
   //POSTでjoin.phpと非同期通信を実施
-  xhr.onload=  function(){
+  xhr.addEventListener=  function(message){
     //通信完了したら以下を実行
     if(xhr.readyState === 4){
       //正常に通信ができたらをレスポンスのテキストを受信
@@ -121,15 +124,14 @@
           //コンソール
           console.log ('通信成功');
           //messageの処理
-          const message = document.getElementById('message');
-          ;
-
-          console.log (message);
-          //JSONの形式で値が返ってきたら各IDに挿入
-          message[0].value =JSON.parse(xhr.responseText)['name'];
-          message[1].value =JSON.parse(xhr.responseText)['email'];
-          message[2].value =JSON.parse(xhr.responseText)['password'];
-          message[3].value =JSON.parse(xhr.responseText)['image'];
+          // message = document.getElementById('message');
+          message = document.querySelectorAll('small');
+          console.log (JSON.parse(xhr.responseText));
+          // //JSONの形式で値が返ってきたら各IDに挿入
+          message[0].textContent =JSON.parse(xhr.responseText['name']);
+          message[1].textContent =JSON.parse(xhr.responseText['email']);
+          message[2].textContent =JSON.parse(xhr.responseText['password']);
+          message[3].textContent=JSON.parse(xhr.responseText['image']);
           }
         }
       }
