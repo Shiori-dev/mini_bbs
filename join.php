@@ -9,7 +9,6 @@ require('dbconnect.php');
 //function.php読み込み(htmlspecialchars)
 require('app/functions.php');
 
-
 //ページリクエストがGETの場合の処理(最初の読み込み時)
 if($_SERVER['REQUEST_METHOD'] == 'GET'){
 		//join.htmlを読み込み
@@ -26,25 +25,27 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$message['password'] = '';
 		$message['image'] = '';
 
-	// ニックネームの記入漏れチェック
+		// ニックネームの記入漏れチェック
 	if($contents['name'] ===''){
 		$error['name'] = 'blank';
 	}
+
 	//ニックネームの文字数チェック
-	if(strlen($contents['name']) < 2 && ($contents['name']) > 12  ){
+	if(mb_strlen(($contents['name']) < 2 && ($contents['name']) > 12)){
 		$error['name'] = 'length';
 	}
+
 	//メールアドレスの記入漏れチェック
 	if($contents['email'] ===''){
 		$error['email'] = 'blank';
 	}
+		//パスワードの記入漏れチェック
+		if($contents['password'] ===''){
+			$error['password'] = 'blank';
+		}
 	//パスワードの文字数チェック
 	if(strlen($contents['password']) < 4 ){
 		$error['password'] = 'length';
-	}
-	//パスワードの記入漏れチェック
-	if($contents['password'] ===''){
-		$error['password'] = 'blank';
 	}
 
 
@@ -53,7 +54,8 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 	if(!empty($_FILES['image']['name'])){
 		$ext = substr($$_FILES['image']['name'], -3);
 	//ファイルの拡張子チェック
-		if($ext !='jpg' && $ext != 'jpeg' && $ext != 'gif' && $ext != 'png'){
+		if($ext !='jpg' && $ext != 'jpeg' && $ext != 'gif' && $ext != 'png')
+		{
 			$error['image'] ='type';
 		}
 	}
@@ -63,10 +65,10 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 			$member = $db->prepare('SELECT COUNT(*) AS cnt FROM members WHERE email=?');
 			$member->execute(array($contents['email']));
 			$record = $member->fetch();
-		if($record['cnt'] > 0){
-			//エラメッセージにduplicateを設定
-			$error['email'] = 'duplicate';
-		}
+				if($record['cnt'] > 0){
+					//エラメッセージにduplicateを設定
+					$error['email'] = 'duplicate';
+				}
 	}
 
 	//ファイルアップロード
@@ -80,17 +82,17 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$_SESSION['join']['image'] = $image;
 		//記入内容に問題がないとき、check.phpへ遷移
 		header('Location: check.php');
-
 	}
 
 		//入力フォームのエラー文表示
-		//ニックネームが記入されていない場合
-		if(isset($error['name']) && $error['name'] == 'blank'){
-				$message['name'] = 'ニックネームを入力してください';
-		}
+		// ニックネームが記入されていない場合
 
-			//ニックネームの文字数が規定外の場合
-		if(isset($error['name']) && $error['name'] === 'length'){
+		// var_dump($contents);
+		if(isset($error['name']) && $error['name'] == 'blank'){
+			$message['name']= 'ニックネームはを入力してください';
+		}
+		//ニックネームの文字数が規定外の場合
+		if(isset($error['name']) && $error['name'] == 'length'){
 				$message['name']= 'ニックネームは3~12文字で記入してください';
 		}
 
@@ -99,27 +101,25 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 				$message['email'] = 'メールアドレスを入力してください';
 		}
 
-		//登録済みのアドレスだった場合
-		// if($error['email'] === 'duplicate'){
-		// $message['email'] = '指定されたメールアドレスは、すでに登録されています';
-		// }
+		// 登録済みのアドレスだった場合
+		if(isset($error['email']) && $error['email'] == 'duplicate'){
+				$message['email'] = '指定されたメールアドレスは、すでに登録されています';
+		}
 
-		// //パスワードが4文字より少なかった場合
-		// if($error['password'] === 'length'){
-		// $message['password'] = 'パスワードは4文字以上で入力してください';
-		//
-		// }
+		//パスワードが4文字より少なかった場合
+		if(isset($error['password']) && $error['password'] == 'length'){
+				$message['password'] = 'パスワードは4文字以上で入力してください';
+		}
 
 		// パスワード記入漏れの場合
 		if(isset($error['password']) && $error['password'] == 'blank'){
 				$message['password'] =  'パスワードを入力してください';
 		}
 
-
-		// //画像ファイルの拡張子エラー文
-		// if(isset($error['image']) && $error['image'] ==='type'){
-		// $message['image'] = '「.gif」または「.jpg」または「.png」の画像を指定してください';
-		// }
+		//画像ファイルの拡張子エラー文
+		if(isset($error['image']) && $error['image'] =='type'){
+				$message['image'] = '「.gif」または「.jpg」または「.png」の画像を指定してください';
+		}
 
 		$ary_message = array(
 			"name" => $message['name'],
@@ -130,7 +130,6 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 
 		//messageをJASON形式で書き出し
-		// echo json_encode($message['password'],JSON_UNESCAPED_UNICODE);
 		echo json_encode($ary_message,JSON_UNESCAPED_UNICODE);
 
 		//URLパラメータにrewriteがあれば、$contentsに$_SESSIONの内容を代入(check.phpから戻ってきた場合)
