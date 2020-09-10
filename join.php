@@ -8,57 +8,61 @@ session_start();
 require('dbconnect.php');
 //function.php読み込み(htmlspecialchars)
 require('app/functions.php');
-//join.php読み込み
-include 'template/join.html';
 
-//フォーム送信時、$POSTで受け取った値が空ではない場合実行するエラーチェックを設定
-if(!empty($_POST[""])){
-	var_dump($_POST['name']);
-	var_dump($_POST['email']);
-	var_dump($_POST['password']);
-	var_dump($_FILES['image']);
+
+//ページリクエストがGETの場合の処理(最初の読み込み時)
+if($_SERVER['REQUEST_METHOD'] == 'GET'){
+		//join.htmlを読み込み
+		include 'template/join.html';
+}//ページリクエストがPOSTの場合の処理(button押下時)
+elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
+		//POSTされたJSON文字列を取り出し
+		$json = file_get_contents("php://input");
+		//JSON文字列をobjectに変換
+		$contents = json_decode($json,true);
+
+
 	// ニックネームの記入漏れチェック
-	if($_POST['name'] ===''){
-	$error['name'] = 'blank';
+	if($contents['name'] ===''){
+		$error['name'] = 'blank';
 	}
 	//ニックネームの文字数チェック
-	// if(strlen($_POST['name']) < 2 && ($_POST['name']) > 12  ){
+	// if(strlen($contents['name']) < 2 && ($contents['name']) > 12  ){
 	// $error['name'] = 'length';
 	// }
 	//メールアドレスの記入漏れチェック
-	if($_POST['email'] ===''){
-	$error['email'] = 'blank';
+	if($contents['email'] ===''){
+		$error['email'] = 'blank';
 	}
 	//パスワードの文字数チェック
-	// if(strlen($_POST['password']) < 4 ){
+	// if(strlen($contents['password']) < 4 ){
 	// $error['password'] = 'length';
 	// }
 	//パスワードの記入漏れチェック
-	if($_POST['password'] ===''){
-	$error['password'] = 'blank';
+	if($contents['password'] ===''){
+		$error['password'] = 'blank';
 	}
 
-	// 画像がアップロードされていた場合、下記を実行
+
 	// 画像ファイルのエラーチェック
-	$fileName = $_FILES['image']['name'];
-	if(!empty($fileName)){
-	$ext = substr($fileName, -3);
+	// 画像がアップロードされていた場合、下記を実行
+	if(!empty($_FILES['image']['name'])){
+		$ext = substr($$_FILES['image']['name'], -3);
 	//ファイルの拡張子チェック
-	if($ext !='jpg' && $ext != 'jpeg' && $ext != 'gif' && $ext != 'png'){
-	$error['image'] ='type';
+		if($ext !='jpg' && $ext != 'jpeg' && $ext != 'gif' && $ext != 'png'){
+			$error['image'] ='type';
+		}
 	}
-	}
-
 
 	//アカウントの重複をチェック
 	if(empty($error)){
-	$member = $db->prepare('SELECT COUNT(*) AS cnt FROM members WHERE email=?');
-	$member->execute(array($_POST['email']));
-	$record = $member->fetch();
-	if($record['cnt'] > 0){
-	//エラメッセージにduplicateを設定
-	$error['email'] = 'duplicate';
-	}
+		$member = $db->prepare('SELECT COUNT(*) AS cnt FROM members WHERE email=?');
+		$member->execute(array($contents['email']));
+		$record = $member->fetch();
+		if($record['cnt'] > 0){
+			//エラメッセージにduplicateを設定
+			$error['email'] = 'duplicate';
+		}
 	}
 
 	//ファイルアップロード
@@ -68,61 +72,59 @@ if(!empty($_POST[""])){
 	//保存する場所を指定してファイルをアップロード
 	move_uploaded_file($_FILES['image']['tmp_name'],'member_picture/' . $image);
 	//DBに保管するためセションjoinに値を保存
-	$_SESSION['join'] = $_POST;
+	$_SESSION['join'] = $contents;
 	$_SESSION['join']['image'] = $image;
 	//記入内容に問題がないとき、check.phpへ遷移
 	header('Location: check.php');
-	exit();
+
 	}
+
+		//入力フォームのエラー文表示
+		//ニックネームが記入されていない場合
+		if(isset($error['name']) && $error['name'] == 'blank'){
+				$message['name'] = 'ニックネームを入力してください';
+		}
+
+		//ニックネームの文字数が規定外の場合
+		// if($error['name'] === 'length'){
+		// $message['name']= 'ニックネームは3~12文字で記入してください';
+		//
+		// }
+
+		// メールアドレスが記入されていない場合
+		if(isset($error['email']) && $error['email'] == 'blank'){
+				$message['email'] = 'メールアドレスを入力してください';
+		}
+
+		//登録済みのアドレスだった場合
+		// if($error['email'] === 'duplicate'){
+		// $message['email'] = '指定されたメールアドレスは、すでに登録されています';
+		//
+		// }
+
+		// //パスワードが4文字より少なかった場合
+		// if($error['password'] === 'length'){
+		// $message['password'] = 'パスワードは4文字以上で入力してください';
+		//
+		// }
+
+		// パスワード記入漏れの場合
+		if(isset($error['password']) && $error['password'] == 'blank'){
+				$message['password'] =  'パスワードを入力してください';
+		}
+
+
+		// //画像ファイルの拡張子エラー文
+		// if($error['image'] ==='type'){
+		// $message['image'] = '「.gif」または「.jpg」または「.png」の画像を指定してください';
+		//
+		// }
+
+		//messageをJASON形式で書き出し
+		echo json_encode($message['password'],JSON_UNESCAPED_UNICODE);
+
+		//URLパラメータにrewriteがあれば、$contentsに$_SESSIONの内容を代入(check.phpから戻ってきた場合)
+		// if($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])){
+		// 	$contents = $_SESSION['join'];
+		// }
 }
-
-//入力フォームのエラー文表示
-//ニックネームが記入されていない場合
-if($error['name'] = 'blank'){
-$message['name'] = 'ニックネームを入力してください';
-exit();
-}
-
-//ニックネームの文字数が規定外の場合
-// if($error['name'] === 'length'){
-// $message['name']= 'ニックネームは3~12文字で記入してください';
-// exit();
-// }
-
-// メールアドレスが記入されていない場合
-if($error['email'] = 'blank'){
-$message['email'] = 'メールアドレスを入力してください';
-exit();
-}
-
-//登録済みのアドレスだった場合
-// if($error['email'] === 'duplicate'){
-// $message['email'] = '指定されたメールアドレスは、すでに登録されています';
-// exit();
-// }
-
-// //パスワードが4文字より少なかった場合
-// if($error['password'] === 'length'){
-// $message['password'] = 'パスワードは4文字以上で入力してください';
-// exit();
-// }
-
-// パスワード記入漏れの場合
-if($error['password'] = 'blank'){
-	$message['password'] =  'パスワードを入力してください';
-}
-
-
-// //画像ファイルの拡張子エラー文
-// if($error['image'] ==='type'){
-// $message['image'] = '「.gif」または「.jpg」または「.png」の画像を指定してください';
-// exit();
-// }
-
-//messageをJASON形式で書き出し
-print json_encode($message['message'],JSON_UNESCAPED_UNICODE);
-
-//URLパラメータにrewriteがあれば、$_POSTに$_SESSIONの内容を代入(check.phpから戻ってきた場合)
-// if($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])){
-// 	$_POST = $_SESSION['join'];
-// }
