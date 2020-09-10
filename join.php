@@ -20,24 +20,28 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$json = file_get_contents("php://input");
 		//JSON文字列をobjectに変換
 		$contents = json_decode($json,true);
-
+		//エラーメッセージ初期化
+		$message['name'] ='';
+		$message['email'] = '';
+		$message['password'] = '';
+		$message['image'] = '';
 
 	// ニックネームの記入漏れチェック
 	if($contents['name'] ===''){
 		$error['name'] = 'blank';
 	}
 	//ニックネームの文字数チェック
-	// if(strlen($contents['name']) < 2 && ($contents['name']) > 12  ){
-	// $error['name'] = 'length';
-	// }
+	if(strlen($contents['name']) < 2 && ($contents['name']) > 12  ){
+		$error['name'] = 'length';
+	}
 	//メールアドレスの記入漏れチェック
 	if($contents['email'] ===''){
 		$error['email'] = 'blank';
 	}
 	//パスワードの文字数チェック
-	// if(strlen($contents['password']) < 4 ){
-	// $error['password'] = 'length';
-	// }
+	if(strlen($contents['password']) < 4 ){
+		$error['password'] = 'length';
+	}
 	//パスワードの記入漏れチェック
 	if($contents['password'] ===''){
 		$error['password'] = 'blank';
@@ -56,9 +60,9 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 	//アカウントの重複をチェック
 	if(empty($error)){
-		$member = $db->prepare('SELECT COUNT(*) AS cnt FROM members WHERE email=?');
-		$member->execute(array($contents['email']));
-		$record = $member->fetch();
+			$member = $db->prepare('SELECT COUNT(*) AS cnt FROM members WHERE email=?');
+			$member->execute(array($contents['email']));
+			$record = $member->fetch();
 		if($record['cnt'] > 0){
 			//エラメッセージにduplicateを設定
 			$error['email'] = 'duplicate';
@@ -67,15 +71,15 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 	//ファイルアップロード
 	if(empty($error)){
-	//日付を付加したファイル名を作成し$imageに代入
-	$image = date('YmdHis') . $_FILES['image']['name'];
-	//保存する場所を指定してファイルをアップロード
-	move_uploaded_file($_FILES['image']['tmp_name'],'member_picture/' . $image);
-	//DBに保管するためセションjoinに値を保存
-	$_SESSION['join'] = $contents;
-	$_SESSION['join']['image'] = $image;
-	//記入内容に問題がないとき、check.phpへ遷移
-	header('Location: check.php');
+		//日付を付加したファイル名を作成し$imageに代入
+		$image = date('YmdHis') . $_FILES['image']['name'];
+		//保存する場所を指定してファイルをアップロード
+		move_uploaded_file($_FILES['image']['tmp_name'],'member_picture/' . $image);
+		//DBに保管するためセションjoinに値を保存
+		$_SESSION['join'] = $contents;
+		$_SESSION['join']['image'] = $image;
+		//記入内容に問題がないとき、check.phpへ遷移
+		header('Location: check.php');
 
 	}
 
@@ -85,11 +89,10 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 				$message['name'] = 'ニックネームを入力してください';
 		}
 
-		//ニックネームの文字数が規定外の場合
-		// if($error['name'] === 'length'){
-		// $message['name']= 'ニックネームは3~12文字で記入してください';
-		//
-		// }
+			//ニックネームの文字数が規定外の場合
+		if(isset($error['name']) && $error['name'] === 'length'){
+				$message['name']= 'ニックネームは3~12文字で記入してください';
+		}
 
 		// メールアドレスが記入されていない場合
 		if(isset($error['email']) && $error['email'] == 'blank'){
@@ -99,7 +102,6 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 		//登録済みのアドレスだった場合
 		// if($error['email'] === 'duplicate'){
 		// $message['email'] = '指定されたメールアドレスは、すでに登録されています';
-		//
 		// }
 
 		// //パスワードが4文字より少なかった場合
@@ -115,13 +117,21 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 
 		// //画像ファイルの拡張子エラー文
-		// if($error['image'] ==='type'){
+		// if(isset($error['image']) && $error['image'] ==='type'){
 		// $message['image'] = '「.gif」または「.jpg」または「.png」の画像を指定してください';
-		//
 		// }
 
+		$ary_message = array(
+			"name" => $message['name'],
+			"email" => $message['email'],
+			"password" => $message['password'],
+			"image" => $message['image']
+		);
+
+
 		//messageをJASON形式で書き出し
-		echo json_encode($message['password'],JSON_UNESCAPED_UNICODE);
+		// echo json_encode($message['password'],JSON_UNESCAPED_UNICODE);
+		echo json_encode($ary_message,JSON_UNESCAPED_UNICODE);
 
 		//URLパラメータにrewriteがあれば、$contentsに$_SESSIONの内容を代入(check.phpから戻ってきた場合)
 		// if($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])){
