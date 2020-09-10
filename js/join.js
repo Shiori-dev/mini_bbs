@@ -100,7 +100,7 @@
       //join.phpにPOST通信を実施
       xhr.open('POST', 'join.php', true);
       //ヘッダーの設定
-      xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+      xhr.setRequestHeader('content-type', 'application/json;charset=UTF-8');
       //formの値をrequestsに代入
       const requests = {name:formNode[0].value, email:formNode[1].value, password:formNode[2].value, image:formNode[3].value};
       //JSONにエンコード
@@ -114,7 +114,7 @@
   const xhr = new XMLHttpRequest();
 
   //POSTでjoin.phpと非同期通信を実施
-  xhr.addEventListener=  function(message){
+  xhr.onload=  function(message){
     //通信完了したら以下を実行
     if(xhr.readyState === 4){
       //正常に通信ができたらをレスポンスのテキストを受信
@@ -122,13 +122,16 @@
           //コンソール
           console.log ('通信成功');
           //messageの処理
-          message = document.getElementById('message');
+          // message1 = document.getElementById('message1');
+          // message2 = document.getElementById('message2');
+          message = document.getElementById('message3');
+          // message4 = document.getElementById('message4');
           console.log (JSON.parse(xhr.responseText));
           // //JSONの形式で値が返ってきたら各IDに挿入
-          // message[0].textContent =JSON.parse(xhr.responseText['name']);
-          // message[1].textContent =JSON.parse(xhr.responseText['email']);
-          message[2].value =JSON.parse(xhr.responseText['password']);
-          // message[3].textContent=JSON.parse(xhr.responseText['image']);
+          // message1.innerHTML = JSON.parse(xhr.responseText);
+          // message2.innerHTML = JSON.parse(xhr.responseText);
+          message.innerHTML = JSON.parse(xhr.responseText);
+          // message4.innerHTML = JSON.parse(xhr.responseText);
           }
         }
       }
