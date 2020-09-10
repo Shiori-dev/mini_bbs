@@ -114,24 +114,28 @@
   const xhr = new XMLHttpRequest();
 
   //POSTでjoin.phpと非同期通信を実施
-  xhr.onload=  function(message){
+  xhr.onload=  function(message1,message2,message3,message4){
     //通信完了したら以下を実行
     if(xhr.readyState === 4){
       //正常に通信ができたらをレスポンスのテキストを受信
       if(xhr.status === 200){
           //コンソール
           console.log ('通信成功');
-          //messageの処理
-          // message1 = document.getElementById('message1');
-          // message2 = document.getElementById('message2');
-          message = document.getElementById('message3');
-          // message4 = document.getElementById('message4');
-          console.log (JSON.parse(xhr.responseText));
-          // //JSONの形式で値が返ってきたら各IDに挿入
-          // message1.innerHTML = JSON.parse(xhr.responseText);
-          // message2.innerHTML = JSON.parse(xhr.responseText);
-          message.innerHTML = JSON.parse(xhr.responseText);
-          // message4.innerHTML = JSON.parse(xhr.responseText);
+          //返ってきた値の処理
+          //返ってきた配列をdataへ代入
+          const data = JSON.parse(xhr.responseText);
+          //各idを取得
+          message1 = document.getElementById('message1');
+          message2 = document.getElementById('message2');
+          message3 = document.getElementById('message3');
+          message4 = document.getElementById('message4');
+          //返ってきた値をコンソールに書き出し
+          console.log (data);
+          // //JSONの形式で値が返ってきたら各IDに挿入して画面表示
+          message1.innerHTML = data.name;
+          message2.innerHTML = data.email;
+          message3.innerHTML = data.password;
+          message4.innerHTML = data.image;
           }
         }
       }
