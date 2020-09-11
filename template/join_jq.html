@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>会員登録</title>
+	<!-- jQuery読み込み -->
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+	<div id="wrap">
+		<div id="head">
+			<h1>会員登録</h1>
+		</div>
+<!-- フォーム開始 -->
+		<div id="content">
+			<p>次のフォームに必要事項をご記入ください。</p>
+			<!-- novalidateでhtml5のバリデーションチェックを非表示 -->
+			<form id="form" enctype="multipart/form-data" novalidate>
+				<dl>
+					<dt>ニックネーム<span class="required">必須</span><dt>
+						<dd>
+							<input id="name" type="text" name="name" size="35" maxlength="255"  value="" />
+							<br>
+							<small id="message1" class="error"></small>
+						</dd>
+					<dt>メールアドレス<span class="required">必須</span></dt>
+						<dd>
+						<input id="email" type="email" name="email" size="35" maxlength="255" value="" />
+						<br>
+						<small id="message2" class="error"></small>
+						</dd>
+					<dt>パスワード<span class="required">必須</span></dt>
+						<dd>
+						<input id="password" type="password" name="password" size="10" maxlength="20" value="" />
+						<br>
+						<small id="message3" class="error"></small>
+						</dd>
+					<dt>写真など</dt>
+						<dd>
+						<input id="image" type="file" name="image" size="35" />
+						<br>
+						<small id="message4" class="error"></small>
+						</dd>
+				</dl>
+				<div><input id="button" type="submit" value="入力内容を確認する" /></div>
+			</form>
+		</div>
+<!-- フォーム終了 -->
+<script src="js/join_jq.js"></script>
+</body>
+</html>
