@@ -25,11 +25,14 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$message['password'] = '';
 		$message['image'] = '';
 
+		// var_dump($contents['name']);
 		// ニックネームの記入漏れチェック
 	if($contents['name'] ===''){
 		$error['name'] = 'blank';
 	}	//ニックネームの文字数チェック
-	elseif((mb_strlen($contents['name'])) < 2 && (mb_strlen($contents['name']) > 12)){
+	elseif(($contents['name'] != '' && mb_strlen($contents['name']) < 3)){
+		$error['name'] = 'length';
+	}elseif(mb_strlen($contents['name']) >12){
 		$error['name'] = 'length';
 	}
 
@@ -85,10 +88,10 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 	//入力フォームのエラー文表示
 	// ニックネームが記入されていない場合
 		if(isset($error['name']) && $error['name'] == 'blank'){
-			$message['name']= 'ニックネームを入力してください';
+				$message['name']= 'ニックネームを入力してください';
 		}//ニックネームの文字数が規定外の場合
 		elseif(isset($error['name']) && $error['name'] == 'length'){
-			$message['name']= 'ニックネームは3~12文字で記入してください';
+				$message['name']= 'ニックネームは3~12文字で記入してください';
 		}
 
 		// メールアドレスが記入されていない場合
