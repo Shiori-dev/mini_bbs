@@ -28,47 +28,45 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 		// ニックネームの記入漏れチェック
 	if($contents['name'] ===''){
 		$error['name'] = 'blank';
-	}
-
-	//ニックネームの文字数チェック
-	if(mb_strlen(($contents['name']) < 2 && ($contents['name']) > 12)){
+	}	//ニックネームの文字数チェック
+	elseif((mb_strlen($contents['name'])) < 2 && (mb_strlen($contents['name']) > 12)){
 		$error['name'] = 'length';
 	}
 
 	//メールアドレスの記入漏れチェック
+	//メールアドレスが空だった場合の処理
 	if($contents['email'] ===''){
 		$error['email'] = 'blank';
+	}//値が入っていたら以下のアカウント重複チェックを実行
+	else{
+		$member = $db->prepare('SELECT COUNT(*) AS cnt FROM members WHERE email=?');
+		$member->execute(array($contents['email']));
+		$record = $member->fetch();
+			if($record['cnt'] > 0){
+				//エラメッセージにduplicateを設定
+				$error['email'] = 'duplicate';
+			}
 	}
-		//パスワードの記入漏れチェック
-		if($contents['password'] ===''){
-			$error['password'] = 'blank';
-		}
-	//パスワードの文字数チェック
-	if(strlen($contents['password']) < 4 ){
+
+	//パスワードの記入漏れチェック
+	if($contents['password'] ===''){
+		$error['password'] = 'blank';
+	}//パスワードの文字数チェック
+	elseif($contents['password'] != '' && (strlen($contents['password']) < 4 ))
+	{
 		$error['password'] = 'length';
 	}
 
+	// var_dump($contents);
 
 	// 画像ファイルのエラーチェック
 	// 画像がアップロードされていた場合、下記を実行
-	if(!empty($_FILES['image']['name'])){
-		$ext = substr($$_FILES['image']['name'], -3);
-	//ファイルの拡張子チェック
-		if($ext !='jpg' && $ext != 'jpeg' && $ext != 'gif' && $ext != 'png')
-		{
-			$error['image'] ='type';
+	if(!empty($_FILES['image'])){
+		$ext = substr($$_FILES['image'], -3);
+		//ファイルの拡張子チェック
+		if($ext !='jpg' && $ext != 'jpeg' && $ext != 'gif' && $ext != 'png'){
+		$error['image'] ='type';
 		}
-	}
-
-	//アカウントの重複をチェック
-	if(empty($error)){
-			$member = $db->prepare('SELECT COUNT(*) AS cnt FROM members WHERE email=?');
-			$member->execute(array($contents['email']));
-			$record = $member->fetch();
-				if($record['cnt'] > 0){
-					//エラメッセージにduplicateを設定
-					$error['email'] = 'duplicate';
-				}
 	}
 
 	//ファイルアップロード
@@ -84,35 +82,28 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
 		header('Location: check.php');
 	}
 
-		//入力フォームのエラー文表示
-		// ニックネームが記入されていない場合
-
-		// var_dump($contents);
+	//入力フォームのエラー文表示
+	// ニックネームが記入されていない場合
 		if(isset($error['name']) && $error['name'] == 'blank'){
-			$message['name']= 'ニックネームはを入力してください';
-		}
-		//ニックネームの文字数が規定外の場合
-		if(isset($error['name']) && $error['name'] == 'length'){
-				$message['name']= 'ニックネームは3~12文字で記入してください';
+			$message['name']= 'ニックネームを入力してください';
+		}//ニックネームの文字数が規定外の場合
+		elseif(isset($error['name']) && $error['name'] == 'length'){
+			$message['name']= 'ニックネームは3~12文字で記入してください';
 		}
 
 		// メールアドレスが記入されていない場合
 		if(isset($error['email']) && $error['email'] == 'blank'){
 				$message['email'] = 'メールアドレスを入力してください';
-		}
-
-		// 登録済みのアドレスだった場合
-		if(isset($error['email']) && $error['email'] == 'duplicate'){
+		}// 登録済みのアドレスだった場合
+		elseif(isset($error['email']) && $error['email'] == 'duplicate'){
 				$message['email'] = '指定されたメールアドレスは、すでに登録されています';
 		}
 
 		//パスワードが4文字より少なかった場合
 		if(isset($error['password']) && $error['password'] == 'length'){
 				$message['password'] = 'パスワードは4文字以上で入力してください';
-		}
-
-		// パスワード記入漏れの場合
-		if(isset($error['password']) && $error['password'] == 'blank'){
+		}// パスワード記入漏れの場合
+		elseif(isset($error['password']) && $error['password'] == 'blank'){
 				$message['password'] =  'パスワードを入力してください';
 		}
 
