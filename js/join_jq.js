@@ -91,16 +91,17 @@
       //接続先URL
       url: "join_jq.php",
       //使用するHTTPメソッド
-      data:($("form").serializeArray()),
+      data: $("form").serialize(),
     }) //データを受け取ったあとの処理
     .done(function(data){
-      console.log(JSON.stringify($("form").serializeArray()))
+      var json_data = JSON.parse( data );　
+      console.log(json_data);
       //取得した合計金額を表示
       //htmlの各idに出力
-      $('#message1').text(data.name);
-      $('#message2').text(data.email);
-      $('#message3').text(data.password);
-      $('#message4').text(data.image);
+      $("#message1").text(json_data.name);
+      $("#message2").text(json_data.email);
+      $("#message3").text(json_data.password);
+      $("#message4").text(json_data.image);
     }).fail( (jqXHR, textStatus, errorThrown) => {
             // Ajax通信が失敗したら発動
             alert('Ajax通信に失敗しました。');
